@@ -50,7 +50,7 @@ class PdfController extends Controller
         $message = $data->all()['message'];
         $id = $message['from']['id'];
         info($message);
-        $name = '' ;# $message['from']['first_name'] . ' ' .  $message['from']['last_name'];
+        $name = $message['from']['first_name'] . ' ' .  (isset($message['from']['last_name']) ? $message['from']['last_name'] : '');
         $text = $message['text'];
         $pathAdmins = base_path('admins.json');
         $pathTried = base_path('tried.json');
