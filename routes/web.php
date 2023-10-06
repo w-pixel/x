@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 //Route::get('test',[PdfController::class,'test']);
 
 Route::post('/telegram', [PdfController::class,'handleBot'])->withoutMiddleware(VerifyCsrfToken::class);
+//Route::get('test', [PdfController::class,'generateReferenceNumber']);

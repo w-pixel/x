@@ -215,10 +215,32 @@ class PdfController extends Controller
         . "بنك المستفيد : `";
     }
 
-    function generateReferenceNumber(){
-        return 'A@#$@#$';
-    }
+    function generateReferenceNumber() {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '0123456789';
+        $charCount = 4; // Number of characters to include from A to Z
+        $numberCount = 12; // Number of numeric characters
     
+        $reference = '';
+    
+        // Add random characters and numbers alternately
+        for ($i = 0; $i < 16; $i++) {
+            if ($charCount > 0 && ($i != 0 || $i != 1) && ($i % 4 == 1 || $i % 4 == 1)) {
+                // Add a random character
+                $randomChar = $chars[rand(0, strlen($chars) - 1)];
+                $reference .= $randomChar;
+                $charCount--;
+            } else {
+                // Add a random number
+                $randomNum = $numbers[rand(0, strlen($numbers) - 1)];
+                $reference .= $randomNum;
+                $numberCount--;
+            }
+        }
+    
+        return $reference;
+    }
+
     function index(){
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
