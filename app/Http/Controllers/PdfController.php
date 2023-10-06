@@ -44,6 +44,7 @@ class PdfController extends Controller
         //return response()->json(['message' => 'Webhook received and processed.']);
     }
 
+
     private function processWebhookData($data)
     {
         $message = $data->all()['message'];
@@ -214,6 +215,10 @@ class PdfController extends Controller
         . "بنك المستفيد : `";
     }
 
+    function generateReferenceNumber(){
+        return 'A@#$@#$';
+    }
+    
     function index(){
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
