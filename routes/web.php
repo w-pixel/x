@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [PdfController::class,'index']);
+//Route::get('/', [PdfController::class,'index']);
+//Route::get('test',[PdfController::class,'test']);
+
 Route::post('/telegram', [PdfController::class,'handleBot'])->withoutMiddleware(VerifyCsrfToken::class);
-Route::get('test',[PdfController::class,'test']);
