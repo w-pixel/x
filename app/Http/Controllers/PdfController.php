@@ -55,7 +55,7 @@ class PdfController extends Controller
         $tried = json_decode(file_get_contents($pathTried));
 
 
-        if (!isset($message['message'])){
+        if (!isset($message['message']) || !isset($message['message']['text'])){
             info($message);
             $this->sendMessage($admins[0],'An error happen with message key');
             return;
@@ -65,6 +65,8 @@ class PdfController extends Controller
 
         $id = $message['from']['id'];
         $name = $message['from']['first_name'] . ' ' .  (isset($message['from']['last_name']) ? $message['from']['last_name'] : '');
+
+
         $text = $message['text'];
 
         if (!in_array($id,$tried)){
