@@ -121,7 +121,7 @@ class PdfController extends Controller
 
         //! need edit if we have multibanks
         
-        $part = fn($text) => trim(explode(':',$text)[1]);
+        $part = fn($text) => trim(explode(':',$text,2)[1]);
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
             'from' => $part($text[6]),
