@@ -114,7 +114,7 @@ class PdfController extends Controller
     function handleNewPdf($id,$text){
         $text = explode("\n",$text);
 
-        if (count($text) != 5){
+        if (count($text) != 7){
             $this->sendMessage($id,'البيانات التي تم إرسالها اقل او اكثر من المطلوب ! ');
             return;
         }
@@ -124,8 +124,8 @@ class PdfController extends Controller
         $part = fn($text) => trim(explode(':',$text)[1]);
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
-            'from' => $this->randomNumber(8),
-            'to' => $this->randomNumber(8),
+            'from' => $part($text[6]),
+            'to' => $part($text[5]),
             'transaction_date' => $part($text[1]),
             'transfer_amount' => $part($text[2]),
             'recipient_name' => $part($text[3]),
@@ -220,10 +220,12 @@ class PdfController extends Controller
         return 'يا هلا ب ' . $name . "🐒\n\n"
         . "عزيزي حتى تسوي PDF إستخدم هاي الرسالة\n\n"
         . "`جديد\n"
-        . "تاريخ التحويل : \n"
-        . "مقدار التحويل : \n"
-        . "اسم المستفيد : \n"
-        . "بنك المستفيد : `";
+        . "تاريخ التحويل : 25 Sep 2023 19:15\n"
+        . "مقدار التحويل : 3,500.00\n"
+        . "اسم المستفيد : MAJID JUMA KHALIFA\n"
+        . "بنك المستفيد : ADIB`"
+        . "رقم حساب المستلم : 28444733`"
+        . "رقم حساب المحول : 28444732`";
     }
 
     function generateReferenceNumber() {
