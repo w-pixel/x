@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\SecondBot;
 use App\Http\Middleware\VerifyCsrfToken;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +21,8 @@ use Illuminate\Support\Facades\Route;
 //Route::get('test',[PdfController::class,'test']);
 
 Route::post('/telegram', [PdfController::class,'handleBot'])->withoutMiddleware(VerifyCsrfToken::class);
-//Route::get('test', [PdfController::class,'generateReferenceNumber']);
+
+Route::post('/telegram1',[SecondBot::class,'handle'])->withoutMiddleware(VerifyCsrfToken::class);
+
+Route::get('receipt/{id}',[SecondBot::class,'handleView']);
+Route::view('alrajhi','alrajhi');

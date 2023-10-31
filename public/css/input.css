@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'SF Arabic';
+    src: local('SF Arabic Regular'), local('SF-Arabic-Regular'),
+        url('/fonts/SFArabic-Regular.woff2') format('woff2'),
+        url('/fonts/SFArabic-Regular.woff') format('woff'),
+        url('/fonts/SFArabic-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
