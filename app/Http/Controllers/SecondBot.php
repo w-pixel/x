@@ -44,7 +44,7 @@ class SecondBot extends Controller
             );
         }
 
-        return '';
+        return 'البنك الذي اخترته تحت الصيانة ، الرجاء المحاولة لاحقا';
     }
     
     function alinma($id,$text){
