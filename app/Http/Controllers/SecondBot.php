@@ -76,10 +76,10 @@ class SecondBot extends Controller
         $receipt = Receipt::create($data);
 
         $url = asset('receipt/' . $receipt->id);
-        $text = "تم صنع الرابط : \n\n `$url` \n\n الموقع اللي يحول : https://www.web2pdfconvert.com";
+
         $this->sendMessage(
             $id,
-            $text,
+            $url,
         );
 
         $this->clearCommand($id);
