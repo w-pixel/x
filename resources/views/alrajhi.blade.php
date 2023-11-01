@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" onclick="window.print()">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ env('PUBLIC') }}/css/style.min.css">
     <!-- #1b254a -->
 </head>
-<body dir="rtl" class="font-sf">
+<body dir="rtl" class="font-sf" onclick="window.print()">
 
     <div class="bg-[#1b254a] h-8"></div>
     
