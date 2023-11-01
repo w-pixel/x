@@ -102,12 +102,12 @@ class SecondBot extends Controller
     }
 
     function buildMakeMessage(...$inputs){
-        $result = '```نسخ' . "\n";
+        $result = '`';
 
         foreach ($inputs as $input){
             $result .= $input . "\n";
         }
-        return $result . '```';
+        return $result . '`';
     }
 
     function AbuDhabi($id,$text){   
