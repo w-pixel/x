@@ -15,7 +15,7 @@ class SecondBot extends Controller
 {
     use PdfTrait;
     // 6545671886:AAE4m71nMNK-n4NfEXHL_6m8DpgoTdH2MeA
-    protected $apiUrl = 'https://api.telegram.org/bot6952002762:AAE0J210_vKdTRcg3_2VEv3C2pUhuzoab88';
+    protected $apiUrl = 'https://api.telegram.org/bot6545671886:AAE4m71nMNK-n4NfEXHL_6m8DpgoTdH2MeA';
 
     function handleView($id){
         $receipt = Receipt::whereId($id)->firstOrFail();

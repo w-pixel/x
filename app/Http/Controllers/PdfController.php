@@ -22,9 +22,7 @@ class PdfController extends Controller
     use PdfTrait;
 
 
-    function test(){
-        return asset('receipt/' . 1);
-    }
+
 
     //protected $token = '6442439406:AAHwQ1_1mU6Sfcgq2Kl3HHdGXaM7QN2FTqo';
     protected $apiUrl = 'https://api.telegram.org/bot6442439406:AAHwQ1_1mU6Sfcgq2Kl3HHdGXaM7QN2FTqo';
