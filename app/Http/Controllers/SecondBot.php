@@ -142,7 +142,7 @@ class SecondBot extends Controller
                 if ($req->status() == 200){
     
                     $content = $req->json();
-                    info($content);
+
                     if (isset($content['Files'])){
                         $path = public_path('pdfs/' . $content['Files'][0]['FileId'] . '.pdf');
                         
