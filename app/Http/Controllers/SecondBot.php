@@ -107,12 +107,13 @@ class SecondBot extends Controller
     
     function web2pdf(string $url)
     {
+        info($url);
         // Define the URL
-        $url = "https://www.web2pdfconvert.com/api/convert/web/to/pdf?storefile=true&filename=pdf-" . time() . '-j';
+        $url = 'https://www.web2pdfconvert.com/api/convert/web/to/pdf?storefile=true&filename=contract-aram-invest-com-pdf-receipts-public-receipt-4';
 
         // Define the form data
         $data = [
-            'url' => $url,
+            'url' => $url . '?weorj=wer',
             'pricing' => 'monthly',
             'ConversionDelay' => '0',
             'CookieConsentBlock' => 'true',
