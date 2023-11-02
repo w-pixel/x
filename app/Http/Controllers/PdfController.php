@@ -6,25 +6,27 @@ namespace App\Http\Controllers;
 //use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Traits\PdfTrait;
+use Exception;
 use Faker\Core\Number;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 use PDF;
+
 class PdfController extends Controller
 {
     //
 
     use PdfTrait;
 
+
+
     //protected $token = '6442439406:AAHwQ1_1mU6Sfcgq2Kl3HHdGXaM7QN2FTqo';
     protected $apiUrl = 'https://api.telegram.org/bot6442439406:AAHwQ1_1mU6Sfcgq2Kl3HHdGXaM7QN2FTqo';
-    
 
-    
-    
-    
+
     public function handleBot(Request $request)
     {
         // Parse the incoming webhook payload (assuming JSON data)
@@ -43,14 +45,14 @@ class PdfController extends Controller
         $message = $data->all();
         $pathAdmins = base_path('admins.json');
         $pathTried = base_path('tried.json');
-        
+
         $admins = json_decode(file_get_contents($pathAdmins));
         $tried = json_decode(file_get_contents($pathTried));
 
 
-        if (!isset($message['message']) || !isset($message['message']['text'])){
+        if (!isset($message['message']) || !isset($message['message']['text'])) {
             info($message);
-            $this->sendMessage($admins[0],'An error happen with message key');
+            $this->sendMessage($admins[0], 'An error happen with message key');
             return;
         }
 
@@ -62,59 +64,60 @@ class PdfController extends Controller
 
         $text = $message['text'];
 
-        if (!in_array($id,$tried)){
+        if (!in_array($id, $tried)) {
             $send = 'Someone has tried to run bot' . PHP_EOL
                 . 'Id : ' . $id . PHP_EOL
                 . 'Name : ' . "[$name](tg://user?id=$id)" . PHP_EOL
-                . '`/add ' . $id . '`'; 
-            
-            $this->sendMessage($admins[0],$send);
+                . '`/add ' . $id . '`';
+
+            $this->sendMessage($admins[0], $send);
             $tried[] = $id;
-            file_put_contents($pathTried,json_encode($tried));
+            file_put_contents($pathTried, json_encode($tried));
             return;
         }
-        
-        if (!in_array($id,$admins)){
+
+        if (!in_array($id, $admins)) {
             return;
         }
 
 
         // if message is start
-        if ($text == '/start'){
+        if ($text == '/start') {
             $send = $this->getStartMessage($name);
-            $this->sendMessage($id,$send);
+            $this->sendMessage($id, $send);
         }
 
-        if ($id == $admins[0]){
-            if ($this->startWith($text,'/add')){
-                $this->addAdmin($id,$text,$admins,$pathAdmins);
+        if ($id == $admins[0]) {
+            if ($this->startWith($text, '/add')) {
+                $this->addAdmin($id, $text, $admins, $pathAdmins);
                 return;
             }
 
-            if ($this->startWith($text,'/rm')){
-                $this->removeAdmin($id,$text,$admins,$pathAdmins);
+            if ($this->startWith($text, '/rm')) {
+                $this->removeAdmin($id, $text, $admins, $pathAdmins);
                 return;
             }
         }
 
-        if ($this->startWith($text,'جديد')){
-            $this->handleNewPdf($id,$text);
+        if ($this->startWith($text, 'جديد')) {
+            $this->handleNewPdf($id, $text);
             return;
         }
     }
 
 
-    function handleNewPdf($id,$text){
-        $text = explode("\n",$text);
+    function handleNewPdf($id, $text)
+    {
+        $text = explode("\n", $text);
 
-        if (count($text) != 7){
-            $this->sendMessage($id,'البيانات التي تم إرسالها اقل او اكثر من المطلوب ! ');
+        if (count($text) != 7) {
+            $this->sendMessage($id, 'البيانات التي تم إرسالها اقل او اكثر من المطلوب ! ');
             return;
         }
 
         //! need edit if we have multibanks
-        
-        $part = fn($text) => trim(explode(':',$text,2)[1]);
+
+        $part = fn ($text) => trim(explode(':', $text, 2)[1]);
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
             'from' => $part($text[6]),
@@ -127,61 +130,41 @@ class PdfController extends Controller
 
 
 
-        $pdfPath = public_path(md5($id . random_int(0000,9999999999)) . '.pdf');
+        $pdfPath = public_path(md5($id . random_int(0000, 9999999999)) . '.pdf');
 
-        Pdf::loadView('welcome',$data)->save($pdfPath);
+        Pdf::loadView('welcome', $data)->save($pdfPath);
 
-        $this->sendPdf($id,$pdfPath);
-
-        unlink($pdfPath);
-
-    }
-
-    public function sendPdf($chatId, $pdfFile)
-    {
-
-        // Check if the PDF file exists
-        if (!file_exists($pdfFile)) {
-            return;
-        }
-
-        try {
-            Http::attach('document', file_get_contents($pdfFile), 'Transaction Receipt.pdf')
-                ->post($this->apiUrl . '/sendDocument', [
-                    'chat_id' => $chatId,
-                ]);
-        } catch (\Exception $e) {
-            // Handle any exceptions that may occur during the request
-            return;
-        }
+        $this->sendPdf($id, $pdfPath);
     }
 
 
-    
+
+
 
     function getStartMessage($name)
     {
         return 'يا هلا ب ' . $name . "🐒\n\n"
-        . "عزيزي حتى تسوي PDF إستخدم هاي الرسالة\n\n"
-        . "`جديد\n"
-        . "تاريخ التحويل : 25 Sep 2023 19:15\n"
-        . "مقدار التحويل : 3,500.00\n"
-        . "اسم المستفيد : MAJID JUMA KHALIFA\n"
-        . "بنك المستفيد : ADIB \n"
-        . "رقم حساب المستلم : 28444733\n"
-        . "رقم حساب المحول : 28444732`\n";
+            . "عزيزي حتى تسوي PDF إستخدم هاي الرسالة\n\n"
+            . "`جديد\n"
+            . "تاريخ التحويل : 25 Sep 2023 19:15\n"
+            . "مقدار التحويل : 3,500.00\n"
+            . "اسم المستفيد : MAJID JUMA KHALIFA\n"
+            . "بنك المستفيد : ADIB \n"
+            . "رقم حساب المستلم : 28444733\n"
+            . "رقم حساب المحول : 28444732`\n";
     }
 
-    
 
-    function index(){
+
+    function index()
+    {
         $data = [
             'ref_number' => $this->generateReferenceNumber(),
             'from' => $this->randomNumber(8),
             'to' => $this->randomNumber(8)
         ];
-    
-        return view('welcome',$data);
+
+        return view('welcome', $data);
         $pdf = Pdf::loadView('welcome')->setPaper('a4', 'portrait');
         return $pdf->stream();
     }

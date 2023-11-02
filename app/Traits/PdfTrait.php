@@ -55,6 +55,26 @@ trait PdfTrait{
     }
 
     
+    public function sendPdf($chatId, $pdfFile)
+    {
+
+        // Check if the PDF file exists
+        if (!file_exists($pdfFile)) {
+            return;
+        }
+
+        try {
+            Http::attach('document', file_get_contents($pdfFile), 'Transaction Receipt.pdf')
+                ->post($this->apiUrl . '/sendDocument', [
+                    'chat_id' => $chatId,
+                ]);
+        } catch (\Exception $e) {
+            // Handle any exceptions that may occur during the request
+            return;
+        }
+        unlink($pdfFile);
+    }
+    
     function sendMessage($chat_id,$text,$reply_markup = [] , $parse_mode = 'MarkDown'){
          Http::get($this->apiUrl . '/sendMessage',[
             'chat_id' => $chat_id,
