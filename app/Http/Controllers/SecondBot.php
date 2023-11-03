@@ -146,7 +146,7 @@ class SecondBot extends Controller
                 $req = Http::withHeaders(['User-Agent' => $this->getUserAgent()])->asForm()->post($url, $data);
                 if ($req->status() == 200){
     
-                    return $content = $req->json();
+                    $content = $req->json();
                     
                     if (isset($content['Files'])){
                         $path = public_path('pdfs/' . $content['Files'][0]['FileId'] . '.pdf');
