@@ -25,5 +25,3 @@ Route::post('/telegram', [PdfController::class,'handleBot'])->withoutMiddleware(
 Route::post('/telegram1',[SecondBot::class,'handle'])->withoutMiddleware(VerifyCsrfToken::class);
 
 Route::get('receipt/{id}',[SecondBot::class,'handleView']);
-
-Route::get('test',[SecondBot::class,'test']);
