@@ -23,6 +23,10 @@ class SecondBot extends Controller
         return view($receipt->type,compact('receipt'));
     }
 
+
+    function test(){
+        return $this->web2pdf('https://www.web2pdfconvert.com/');
+    }
     
 
     function getMakeMessage($name)
@@ -105,15 +109,15 @@ class SecondBot extends Controller
 
 
     
-    function web2pdf(string $url)
+    function web2pdf(string $url2Download)
     {
-        info($url);
+
         // Define the URL
-        $url = 'https://www.web2pdfconvert.com/api/convert/web/to/pdf?storefile=true&filename=contract-aram-invest-com-pdf-receipts-public-receipt-4';
+        $url = 'https://www.web2pdfconvert.com/api/convert/web/to/pdf?storefile=true&filename=pdf-x';
 
         // Define the form data
         $data = [
-            'url' => $url . '?weorj=wer',
+            'url' => $url2Download . '?weorj=' . time(),
             'pricing' => 'monthly',
             'ConversionDelay' => '0',
             'CookieConsentBlock' => 'true',
@@ -142,8 +146,8 @@ class SecondBot extends Controller
                 $req = Http::withHeaders(['User-Agent' => $this->getUserAgent()])->asForm()->post($url, $data);
                 if ($req->status() == 200){
     
-                    $content = $req->json();
-
+                    return $content = $req->json();
+                    
                     if (isset($content['Files'])){
                         $path = public_path('pdfs/' . $content['Files'][0]['FileId'] . '.pdf');
                         
