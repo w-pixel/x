@@ -3,11 +3,10 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'SF Arabic';
-    src: local('SF Arabic Regular'), local('SF-Arabic-Regular'),
-        url('/fonts/SFArabic-Regular.woff2') format('woff2'),
-        url('/fonts/SFArabic-Regular.woff') format('woff'),
-        url('/fonts/SFArabic-Regular.ttf') format('truetype');
+    font-family: 'TheSans';
+    src: url('/fonts/TheSans-Plain.woff2') format('woff2'),
+        url('/fonts/TheSans-Plain.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-  }
+    font-display: swap;
+}

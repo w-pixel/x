@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('to_number')->nullable();
             $table->string('date')->nullable();
             $table->string('purpose')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('memo')->nullable();
         });
     }
 

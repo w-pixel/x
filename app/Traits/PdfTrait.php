@@ -93,13 +93,28 @@ trait PdfTrait{
         return $randomNumber;
     }
 
-    function generateReferenceNumber($charCount = 4,$numberCount = 12) {
+    function generateReferenceNumber($bank = null) {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charslen = strlen($chars) - 1;
         $numbers = '0123456789';
     
         $reference = '';
+
+        if ($bank == 'alinma'){
+            $nums = '';
+            $rchars = '';
+            
+            for ($i = 0;$i < 5;$i++){
+                $nums .= random_Int(0,9);
+            }
+            for ($i = 0;$i < 6;$i++){
+                $rchars .= $chars[random_int(0,$charslen)];
+            }
+            return $chars[random_int(0,$charslen)] . $nums . $rchars;
+        }
     
-        // Add random characters and numbers alternately
+        $charCount = 4;
+        $numberCount = 12;
         for ($i = 0; $i < 16; $i++) {
             if ($charCount > 0 && ($i != 0 || $i != 1) && ($i % 4 == 1 || $i % 4 == 1)) {
                 // Add a random character

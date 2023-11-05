@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 
 use PDF;
@@ -15,7 +16,7 @@ class SecondBot extends Controller
 {
     use PdfTrait;
     // 6545671886:AAE4m71nMNK-n4NfEXHL_6m8DpgoTdH2MeA
-    protected $apiUrl = 'https://api.telegram.org/bot6545671886:AAE4m71nMNK-n4NfEXHL_6m8DpgoTdH2MeA';
+    protected $apiUrl = 'https://api.telegram.org/bot6952002762:AAE0J210_vKdTRcg3_2VEv3C2pUhuzoab88';
 
     function handleView($id){
         $receipt = Receipt::whereId($id)->firstOrFail();
@@ -25,7 +26,7 @@ class SecondBot extends Controller
 
 
     function test(){
-        return $this->web2pdf('https://www.web2pdfconvert.com/');
+        return $this->generateReferenceNumber('alinma');
     }
     
 
@@ -52,32 +53,43 @@ class SecondBot extends Controller
                 'الغرض : حوالات شخصية'
             );
         }
+        elseif ($name == 'الانماء'){
+            return $this->buildMakeMessage(
+                'اربع ارقام من ايبان المحول : 9999',
+                'الى مستفيد : حجي احمد',
+                'رقم حساب المستفيد : 68204803895000',
+                'مبلغ التحويل : 999',
+                'الغرض : مشتريات',
+                'مذكرة : استثمار بمبلغ كذا',
+                'تاريخ العملية : 19:55:35 11-09-2023',
+            );
+        }
 
         return 'البنك الذي اخترته تحت الصيانة ، الرجاء المحاولة لاحقا';
     }
     
     function alinma($id,$text){
-        $this->sendMessage($id,'تحت التطوير ، حاول لاحقا :)');
-        $this->clearCommand($text);
-        return;
+        $points = ['from_number','to_name','to_number','amount','purpose','memo','date'];
+        $this->pdfBankCreate($id,$text,'alinma',7,'الانماء',$points);
     }
+
     function alahly($id,$text){
         $this->sendMessage($id,'تحت التطوير ، حاول لاحقا :)');
         $this->clearCommand($text);
         return;
     }
 
-    function alrajhi($id,$text){
-        $text = $this->checkLengthMessage($id,$text,7,'الراجحي');
+    function pdfBankCreate($id,$text,$type,$lenght_message,$bank,$points){
+        $data = ['type' => $type];
+        if ($bank == 'الانماء'){
+            $data['reference'] = $this->generateReferenceNumber($bank);
+        }
+        $text = $this->checkLengthMessage($id,$text,$lenght_message,$bank);
 
         // Message is not valid
         if ($text === false) return;
 
         $part = fn($text) => $this->partText($text);
-
-        $points = ['date','amount','from_name','from_number','to_name','to_number','purpose'];
-        $data = ['type' => 'alrajhi'];
-
         foreach ($points as $key => $value){
             $data[$value] = $part($text[$key]);
         }
@@ -97,7 +109,48 @@ class SecondBot extends Controller
         if (isset($web2pdf['error'])){
             $this->sendMessage(
                 $id,
-                'تعذر تحويل الى pdf 😭',
+                'تعذر التحويل الى pdf 😭',
+            );
+            return;
+        }
+        
+        $this->sendPdf($id,$web2pdf['name']);
+
+        $this->clearCommand($id);
+
+    }
+
+    function alrajhi($id,$text){
+        $text = $this->checkLengthMessage($id,$text,7,'الراجحي');
+
+        // Message is not valid
+        if ($text === false) return;
+
+        
+        $points = ['date','amount','from_name','from_number','to_name','to_number','purpose'];
+        $data = ['type' => 'alrajhi'];
+        
+        $part = fn($text) => $this->partText($text);
+        foreach ($points as $key => $value){
+            $data[$value] = $part($text[$key]);
+        }
+
+        $this->sendMessage(
+            $id,
+            'انتظر ثواني بين ما انجز المهمة 🐸',
+        );
+
+        $receipt = Receipt::create($data);
+
+        $url = asset('receipt/' . $receipt->id);
+
+
+        $web2pdf = $this->web2pdf($url);
+
+        if (isset($web2pdf['error'])){
+            $this->sendMessage(
+                $id,
+                'تعذر التحويل الى pdf 😭',
             );
             return;
         }
@@ -109,7 +162,7 @@ class SecondBot extends Controller
 
 
     
-    function web2pdf(string $url2Download)
+    function web2pdf(string $url2Download,$pageSize = 'letter')
     {
 
         // Define the URL
@@ -119,7 +172,7 @@ class SecondBot extends Controller
         $data = [
             'url' => $url2Download . '?weorj=' . time(),
             'pricing' => 'monthly',
-            'ConversionDelay' => '0',
+            'ConversionDelay' => '1',
             'CookieConsentBlock' => 'true',
             'LoadLazyContent' => 'true',
             'Scale' => '100',
@@ -127,17 +180,14 @@ class SecondBot extends Controller
             'ViewportWidth' => '800',
             'ViewportHeight' => '800',
             'PageOrientation' => 'portrait',
-            'PageRange' => '1-20',
-            'PageSize' => 'letter',
+            'PageRange' => '1',
+            'PageSize' => $pageSize,
             'MarginTop' => '0',
             'MarginRight' => '0',
             'MarginBottom' => '0',
             'MarginLeft' => '0',
             'ParameterPreset' => 'Custom',
         ];
-
-
-
 
         $tries = 0;
         
