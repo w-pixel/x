@@ -425,133 +425,145 @@ class SecondBot extends Controller
         
         //return;
 
-        $message = $request->json()->all();
+        try {
 
-
-        $pathAdmins = base_path('admins1.json');
-        $pathTried = base_path('tried1.json');
-        
-        $admins = json_decode(file_get_contents($pathAdmins));
-        $tried = json_decode(file_get_contents($pathTried));
-
-        $commandsPath = base_path('last-command.json');
-        $commands = json_decode(file_get_contents($commandsPath));
-
-
-        if (!isset($message['message']['text'])){
-            info($message);
-            $this->sendMessage($admins[0],'An error happen with message key');
-            return;
-        }
-
-        $message = $message['message'];
-        $id = $message['from']['id'];
-        $name = $message['from']['first_name'] . ' ' .  (isset($message['from']['last_name']) ? $message['from']['last_name'] : '');
-        $text = $message['text'];
-
-        $keyboard_1 = [ 'الراجحي', 'ابو ظبي', 'الاهلي', 'الانماء' ];
-        $keyboard = [
-            ['الراجحي','ابو ظبي'],
-            ['الاهلي','الانماء'],
-        ];
-
-
-        if (!in_array($id,$tried)){
-            $send = 'Someone has tried to run bot' . PHP_EOL
-                . 'Id : ' . $id . PHP_EOL
-                . 'Name : ' . "[$name](tg://user?id=$id)" . PHP_EOL
-                . '`/add ' . $id . '`'; 
+            $message = $request->json()->all();
+    
+    
+            $pathAdmins = base_path('admins1.json');
+            $pathTried = base_path('tried1.json');
             
-            $this->sendMessage($admins[0],$send);
-            $tried[] = $id;
-            file_put_contents($pathTried,json_encode($tried));
-            return;
-        }
-        
-        if (!in_array($id,$admins)){
-            return;
-        }
-
-
-        $replyMarkup = json_encode([
-            'keyboard' => $keyboard,
-            'resize_keyboard' => true,
-            'one_time_keyboard' => true,
-        ]);
-
-        // if message is start
-        if ($text == '/start'){
-
+            $admins = json_decode(file_get_contents($pathAdmins));
+            $tried = json_decode(file_get_contents($pathTried));
+    
+            $commandsPath = base_path('last-command.json');
+            $commands = json_decode(file_get_contents($commandsPath));
+    
+    
+            if (!isset($message['message']['text'])){
+                info($message);
+                $this->sendMessage($admins[0],'An error happen with message key');
+                return;
+            }
+    
+            $message = $message['message'];
+            $id = $message['from']['id'];
+            $name = $message['from']['first_name'] . ' ' .  (isset($message['from']['last_name']) ? $message['from']['last_name'] : '');
+            $text = $message['text'];
+    
+            $keyboard_1 = [ 'الراجحي', 'ابو ظبي', 'الاهلي', 'الانماء' ];
+            $keyboard = [
+                ['الراجحي','ابو ظبي'],
+                ['الاهلي','الانماء'],
+            ];
+    
+    
+            if (!in_array($id,$tried)){
+                $send = 'Someone has tried to run bot' . PHP_EOL
+                    . 'Id : ' . $id . PHP_EOL
+                    . 'Name : ' . "[$name](tg://user?id=$id)" . PHP_EOL
+                    . '`/add ' . $id . '`'; 
+                
+                $this->sendMessage($admins[0],$send);
+                $tried[] = $id;
+                file_put_contents($pathTried,json_encode($tried));
+                return;
+            }
+            
+            if (!in_array($id,$admins)){
+                return;
+            }
+    
+    
+            $replyMarkup = json_encode([
+                'keyboard' => $keyboard,
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]);
+    
+            // if message is start
+            if ($text == '/start'){
+    
+                if (isset($commands->$id)){
+                    unset($commands->$id);
+                    file_put_contents($commandsPath,json_encode($commands));
+                }
+    
+    
+                // Send the response
+               $this->sendMessage($id,"اخوية الغالي $name ، اختار البنك اللي تريده من الاسفل",$replyMarkup);
+                return;
+    
+            }
+    
+            if ($id == $admins[0]){
+                if ($this->startWith($text,'/add')){
+                    $this->addAdmin($id,$text,$admins,$pathAdmins);
+                    return;
+                }
+    
+                if ($this->startWith($text,'/rm')){
+                    $this->removeAdmin($id,$text,$admins,$pathAdmins);
+                    return;
+                }
+            }
+    
+            
+    
+            $commandsArray = [
+                'الراجحي'  => fn($id,$text) => $this->alrajhi($id,$text),
+                'ابو ظبي' => fn($id,$text) => $this->AbuDhabi($id,$text),
+                'الانماء' => fn($id,$text) => $this->alinma($id,$text),
+                'الاهلي'  => fn($id,$text) => $this->alahly($id,$text),
+            ];
+            
+            // if the user already have a command
             if (isset($commands->$id)){
-                unset($commands->$id);
-                file_put_contents($commandsPath,json_encode($commands));
-            }
-
-
-            // Send the response
-           $this->sendMessage($id,"اخوية الغالي $name ، اختار البنك اللي تريده من الاسفل",$replyMarkup);
-            return;
-
-        }
-
-        if ($id == $admins[0]){
-            if ($this->startWith($text,'/add')){
-                $this->addAdmin($id,$text,$admins,$pathAdmins);
-                return;
-            }
-
-            if ($this->startWith($text,'/rm')){
-                $this->removeAdmin($id,$text,$admins,$pathAdmins);
-                return;
-            }
-        }
-
-        
-
-        $commandsArray = [
-            'الراجحي'  => fn($id,$text) => $this->alrajhi($id,$text),
-            'ابو ظبي' => fn($id,$text) => $this->AbuDhabi($id,$text),
-            'الانماء' => fn($id,$text) => $this->alinma($id,$text),
-            'الاهلي'  => fn($id,$text) => $this->alahly($id,$text),
-        ];
-        
-        // if the user already have a command
-        if (isset($commands->$id)){
-            if (in_array($text,$keyboard_1)){
-                $commands->$id = $text;
-                file_put_contents($commandsPath,json_encode($commands));
-                $this->sendMessage(
-                    $id,
-                    'حسنا ، الان قم بإرسال البيانات بهذا الشكل 👇' . "\n\n" . $this->getMakeMessage($text),
-                );
-            }
-            else {
-                $commandsArray[$commands->$id]($id,$text);
-            }
-        }
-        else {
-
-            if (isset($commandsArray[$text])){
-
-                $commands->$id = $text;
-                file_put_contents($commandsPath,json_encode($commands));
-
-                $this->sendMessage(
-                    $id,
-                    'اوكي ارسل البيانات الخاصة بالبنك على هذا الشكل' . "\n\n" . $this->getMakeMessage($text)
+                if (in_array($text,$keyboard_1)){
+                    $commands->$id = $text;
+                    file_put_contents($commandsPath,json_encode($commands));
+                    $this->sendMessage(
+                        $id,
+                        'حسنا ، الان قم بإرسال البيانات بهذا الشكل 👇' . "\n\n" . $this->getMakeMessage($text),
                     );
-
-
+                }
+                else {
+                    $commandsArray[$commands->$id]($id,$text);
+                }
             }
             else {
-                $this->sendMessage(
-                    $id,
-                    'الرجاء اختيار البنك اولا',
-                    $replyMarkup
-                );
+    
+                if (isset($commandsArray[$text])){
+    
+                    $commands->$id = $text;
+                    file_put_contents($commandsPath,json_encode($commands));
+    
+                    $this->sendMessage(
+                        $id,
+                        'اوكي ارسل البيانات الخاصة بالبنك على هذا الشكل' . "\n\n" . $this->getMakeMessage($text)
+                        );
+    
+    
+                }
+                else {
+                    $this->sendMessage(
+                        $id,
+                        'الرجاء اختيار البنك اولا',
+                        $replyMarkup
+                    );
+                }
+    
             }
-
         }
+        catch (Exception $e){
+            $errorMessage = $e->getMessage();
+            $lineNumber = $e->getLine();
+    
+            info(print_r(['error' => true, 'message' => $errorMessage, 'line' => $lineNumber],1));
+
+            return response('',200);
+        }
+
     }
 
 }
