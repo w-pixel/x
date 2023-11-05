@@ -26,7 +26,18 @@ class SecondBot extends Controller
 
 
     function test(){
-        return $this->generateReferenceNumber('alinma');
+        try {
+            
+            return 'r' + 3;
+        } 
+        catch (\Exception $e) {
+
+            $errorMessage = $e->getMessage();
+            $lineNumber = $e->getLine();
+    
+            return ['error' => true, 'message' => $errorMessage, 'line' => $lineNumber];
+
+        }
     }
     
 
