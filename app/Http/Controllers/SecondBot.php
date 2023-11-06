@@ -115,8 +115,11 @@ class SecondBot extends Controller
 
         $url = asset('receipt/' . $receipt->id);
 
-
-        $web2pdf = $this->web2pdf($url);
+        $pdfSize = 'letter';
+        if ($bank == 'الانماء'){
+            $pdfSize = 'b5';
+        }
+        $web2pdf = $this->web2pdf($url,$pdfSize);
 
         if (isset($web2pdf['error'])){
             $this->sendMessage(
