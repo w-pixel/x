@@ -30,7 +30,7 @@
                     <div>From Account</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    xxxx xxxx xxxx 8001
+                    xxxx xxxx xxxx {{ $receipt->from_number }}
                 </div>
             </div>
             
@@ -50,21 +50,17 @@
                     <div>To beneficiary</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    وجدان سعيد بن مسعود ال مساعد
+                    {{ $receipt->to_name }}
                 </div>
             </div>
 
-            
-          
-
-            
             <div class="grid grid-cols-10 col-span-1 p-2">
                 <div class="col-span-3 m-1 flex flex-col text-[9px]">
                     <div>حساب المستفيد</div>
                     <div>BeneficiaryAccount</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    68204803895000
+                    {{ $receipt->to_number }}
                 </div>
             </div>
 
@@ -74,7 +70,7 @@
                     <div>Amount</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    SAR 600
+                    SAR {{ $receipt->amount }}
                 </div>
             </div>
 
@@ -84,7 +80,7 @@
                     <div>Fund Transfer Purpose</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    مشتريات
+                    {{ $receipt->purpose }}
                 </div>
             </div>
 
@@ -94,7 +90,7 @@
                     <div>Memo</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    107K tiktok coins charge to @jotaibi6
+                    {{ $receipt->memo }}
                 </div>
             </div>
 
@@ -106,7 +102,7 @@
                     <div>Transaction Date</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    19:55:35 11-09-2023
+                    {{ $receipt->date }}
                 </div>
             </div>
 
@@ -116,7 +112,7 @@
                     <div># Reference</div>
                 </div>
                 <div class="col-span-7 m-1 p-2 bg-[#e7ded0]">
-                    FT23254SDVJY
+                    {{ $receipt->reference }}
                 </div>
             </div>
     </div>
