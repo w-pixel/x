@@ -93,7 +93,7 @@ trait PdfTrait{
         return $randomNumber;
     }
 
-    function generateReferenceNumber($bank = null) {
+    function generateReferenceNumber($bank = null,$date = '') {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charslen = strlen($chars) - 1;
         $numbers = '0123456789';
@@ -112,7 +112,21 @@ trait PdfTrait{
             }
             return $chars[random_int(0,$charslen)] . $nums . $rchars;
         }
-    
+        elseif ($bank == 'alahly'){
+            $reference .= join('',explode('/',$date));
+            for ($i = 0;$i < 10;$i++){
+                $reference .= $chars[random_int(0,25)];
+            }
+            $reference .= random_int(0,9);
+            $reference .= $chars[random_int(0,25)];
+
+            for ($i = 0;$i < 14;$i++){
+                $reference .= random_int(0,9);
+            }
+            
+            return $reference;
+        }
+
         $charCount = 4;
         $numberCount = 12;
         for ($i = 0; $i < 16; $i++) {

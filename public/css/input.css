@@ -3,10 +3,20 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'TheSans';
-    src: url('/fonts/TheSans-Plain.woff2') format('woff2'),
-        url('/fonts/TheSans-Plain.woff') format('woff');
+    font-family: 'DejaVu Sans';
+    src: url('/fonts/DejaVuSans-Bold.woff2') format('woff2'),
+        url('/fonts/DejaVuSans-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DejaVu Sans';
+    src: url('/fonts/DejaVuSans.woff2') format('woff2'),
+        url('/fonts/DejaVuSans.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
+

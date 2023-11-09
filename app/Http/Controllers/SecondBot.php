@@ -76,8 +76,19 @@ class SecondBot extends Controller
                 'تاريخ العملية : 19:55:35 11-09-2023',
             );
         }
+        elseif ($name == 'الاهلي'){
+            return $this->buildMakeMessage(
+                'اسم حساب المحول : KAWTHAR',
+                'رقم حساب المحول : 11100146020800',
+                'المبلغ : 300.00',
+                'تاريخ العملية : 2023/09/17',
+                'وقت الحوالة : 02:49:57',
+                'رقم حساب المستلم : SA1605012000000110836733',
+                'المستفيد : Alinma Services',
+            );
+        }
 
-        return 'البنك الذي اخترته تحت الصيانة ، الرجاء المحاولة لاحقا';
+        return 'لم يتم العثور على البنك الذي اخترته';
     }
     
     function alinma($id,$text){
@@ -86,16 +97,13 @@ class SecondBot extends Controller
     }
 
     function alahly($id,$text){
-        $this->sendMessage($id,'تحت التطوير ، حاول لاحقا :)');
-        $this->clearCommand($text);
-        return;
+        $points = ['from_name','from_number','amount','date','memo','to_number','to_name'];
+        $this->pdfBankCreate($id,$text,'alahly',7,'الاهلي',$points);
     }
 
     function pdfBankCreate($id,$text,$type,$lenght_message,$bank,$points){
         $data = ['type' => $type];
-        if ($bank == 'الانماء'){
-            $data['reference'] = $this->generateReferenceNumber($bank);
-        }
+       
         $text = $this->checkLengthMessage($id,$text,$lenght_message,$bank);
 
         // Message is not valid
@@ -110,6 +118,10 @@ class SecondBot extends Controller
             $id,
             'انتظر ثواني بين ما انجز المهمة 🐸',
         );
+
+        if ($bank == 'الانماء'){
+            $data['reference'] = $this->generateReferenceNumber($bank,$data['date']);
+        }
 
         $receipt = Receipt::create($data);
 
@@ -136,43 +148,8 @@ class SecondBot extends Controller
     }
 
     function alrajhi($id,$text){
-        $text = $this->checkLengthMessage($id,$text,7,'الراجحي');
-
-        // Message is not valid
-        if ($text === false) return;
-
-        
         $points = ['date','amount','from_name','from_number','to_name','to_number','purpose'];
-        $data = ['type' => 'alrajhi'];
-        
-        $part = fn($text) => $this->partText($text);
-        foreach ($points as $key => $value){
-            $data[$value] = $part($text[$key]);
-        }
-
-        $this->sendMessage(
-            $id,
-            'انتظر ثواني بين ما انجز المهمة 🐸',
-        );
-
-        $receipt = Receipt::create($data);
-
-        $url = asset('receipt/' . $receipt->id);
-
-
-        $web2pdf = $this->web2pdf($url);
-
-        if (isset($web2pdf['error'])){
-            $this->sendMessage(
-                $id,
-                'تعذر التحويل الى pdf 😭',
-            );
-            return;
-        }
-        
-        $this->sendPdf($id,$web2pdf['name']);
-
-        $this->clearCommand($id);
+        $this->pdfBankCreate($id,$text,'alrajhi',7,'الراجحي',$points);
     }
 
 
@@ -187,7 +164,7 @@ class SecondBot extends Controller
         $data = [
             'url' => $url2Download . '?weorj=' . time(),
             'pricing' => 'monthly',
-            'ConversionDelay' => '1',
+            'ConversionDelay' => '0',
             'CookieConsentBlock' => 'true',
             'LoadLazyContent' => 'true',
             'Scale' => '100',
@@ -564,7 +541,7 @@ class SecondBot extends Controller
     
             info(print_r(['error' => true, 'message' => $errorMessage, 'line' => $lineNumber],1));
 
-            return response('',200);
+            return response('Error',200);
         }
 
     }

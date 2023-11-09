@@ -27,3 +27,5 @@ Route::post('/telegram1',[SecondBot::class,'handle'])->withoutMiddleware(VerifyC
 Route::get('receipt/{id}',[SecondBot::class,'handleView']);
 
 Route::get('test',[SecondBot::class,'test']);
+
+Route::view('alahly','alahly');
