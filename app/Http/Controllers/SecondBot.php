@@ -131,7 +131,7 @@ class SecondBot extends Controller
         if ($bank == 'الانماء'){
             $pdfSize = 'b5';
         }
-        $web2pdf = $this->web2pdf($url,$pdfSize);
+        $web2pdf = $this->web2pdf($url . '?wer=' . time(),$pdfSize);
 
         if (isset($web2pdf['error'])){
             $this->sendMessage(
@@ -164,7 +164,7 @@ class SecondBot extends Controller
         $data = [
             'url' => $url2Download . '?weorj=' . time(),
             'pricing' => 'monthly',
-            'ConversionDelay' => '0',
+            'ConversionDelay' => '2',
             'CookieConsentBlock' => 'true',
             'LoadLazyContent' => 'true',
             'Scale' => '100',
