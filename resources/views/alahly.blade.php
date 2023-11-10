@@ -7,12 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.alahly.css">
+    @php $p = env('PUBLIC_PATH'); @endphp
+    <link rel="stylesheet" href="{{$p}}/css/style.alahly.css">
+
     <title>Alahly Receiption</title>
 </head>
 <body dir="rtl" class="font-dejasans text-[11px]">
     <div class="flex flex-col justify-center mt-8 items-center">
-        <img src="/img/alahly/header.jpg" width="200px" alt="">
+        <img src="{{$p}}/img/alahly/header.jpg" width="200px" alt="">
         <div class="font-bold mt-3 text-[13px]">إيصال</div>
     </div>
 
